@@ -18,7 +18,7 @@ $period = Period::months(2);
 echo $period; // From: 2021-09-25 00:19:43, To: 2021-11-25 00:19:43
 ```
 
-### Two-yeanrs date period
+### Two-years date period
 ```
 $period = Period::years(2);
 echo $period; // From: 2021-09-25 00:19:43, To: 2021-11-25 00:19:43
