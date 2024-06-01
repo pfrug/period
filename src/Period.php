@@ -7,21 +7,39 @@ use Carbon\Carbon;
 use Pfrug\Period\Helpers\StrHelper;
 use Pfrug\Period\Exception\InvalidPeriodException;
 
+/**
+ * Class for managing time periods.
+ *
+ * @package Pfrug\Period
+ * @author P.Frugone <frugone@gmail.com>
+ */
 class Period
 {
-    /** @var \DateTime */
+    /**
+     * The start date of the period.
+     * @var DateTime
+     */
     public $startDate;
 
-    /** @var \DateTime */
+    /**
+     * The end date of the period.
+     * @var DateTime
+     */
     public $endDate;
 
+    /**
+     * The timezone for the period.
+     * @var string
+     */
     public $timezone = 'UTC';
 
-    // replaced by constants in class TimeZone
-    //public const TZ_UY     = 'America/Montevideo';
-    //public const TZ_ES     = 'Europe/Madrid';
-    //public const TZ_UTC    = 'UTC';
-
+    /**
+     * Period constructor.
+     *
+     * @param DateTime $startDate The start date of the period.
+     * @param DateTime $endDate The end date of the period.
+     * @throws InvalidPeriodException if the start date is after the end date.
+     */
     public function __construct(DateTime $startDate, DateTime $endDate)
     {
         if ($startDate > $endDate) {
@@ -33,10 +51,10 @@ class Period
     }
 
     /**
-     *  Creates an instance of Period from the specified dates
+     * Creates an instance of Period from the specified dates.
      *
-     * @param String|DateTime $startDate
-     * @param String|DateTime $endDate
+     * @param string|DateTime $startDate
+     * @param string|DateTime $endDate
      * @return Period
      */
     public static function create($startDate, $endDate = null)
@@ -53,10 +71,10 @@ class Period
     }
 
     /**
-     * Creates a Period instance with the specified number of minutes
+     * Creates a Period instance with the specified number of minutes.
      *
-     * @param Int $numberOfMinutesStart
-     * @param Int $numberOfMinutesEnd
+     * @param int $numberOfMinutesStart
+     * @param int $numberOfMinutesEnd
      * @return Period
      */
     public static function minutes($numberOfMinutesStart, $numberOfMinutesEnd = 0)
@@ -65,10 +83,10 @@ class Period
     }
 
     /**
-     * Creates a Period instance with the specified number of hours
+     * Creates a Period instance with the specified number of hours.
      *
-     * @param Int $numberOfHoursStart
-     * @param Int $numberOfHoursEnd
+     * @param int $numberOfHoursStart
+     * @param int $numberOfHoursEnd
      * @return Period
      */
     public static function hours($numberOfHoursStart, $numberOfHoursEnd = 0)
@@ -77,10 +95,10 @@ class Period
     }
 
     /**
-     * Creates a Period instance with the specified number of hours
+     * Creates a Period instance with the specified number of days.
      *
-     * @param Int $numberOfDays
-     * @param Int $numberOfDaysEnd
+     * @param int $numberOfDays
+     * @param int $numberOfDaysEnd
      * @return Period
      */
     public static function days($numberOfDays, $numberOfDaysEnd = 0)
@@ -89,10 +107,10 @@ class Period
     }
 
     /**
-     * Creates a Period instance with the specified number of weeks
+     * Creates a Period instance with the specified number of weeks.
      *
-     * @param Int $numberOfWeeks
-     * @param Int $numberOfWeeksEnd
+     * @param int $numberOfWeeks
+     * @param int $numberOfWeeksEnd
      * @return Period
      */
     public static function weeks($numberOfWeeks, $numberOfWeeksEnd = 0)
@@ -101,10 +119,10 @@ class Period
     }
 
     /**
-     * creates a Period instance with the specified number of months
+     * Creates a Period instance with the specified number of months.
      *
-     * @param Int $numberOfMonths
-     * @param Int $numberOfMonthsEnd
+     * @param int $numberOfMonths
+     * @param int $numberOfMonthsEnd
      * @return Period
      */
     public static function months($numberOfMonths, $numberOfMonthsEnd = 0)
@@ -113,10 +131,10 @@ class Period
     }
 
     /**
-     * creates a Period instance with the specified number of years
+     * Creates a Period instance with the specified number of years.
      *
-     * @param Int $numberOfYears
-     * @param Int $numberOfYearsEnd
+     * @param int $numberOfYears
+     * @param int $numberOfYearsEnd
      * @return Period
      */
     public static function years($numberOfYears, $numberOfYearsEnd = 0)
@@ -125,9 +143,10 @@ class Period
     }
 
     /**
-     * Convert dates created in a given timezone to another
-     * @param String $tzIn  Timezone, indicates in which Timezone are the dates entered
-     * @param String $tzOut  Timezone, indicates in which Timezone are the dates output, Defaul UTC
+     * Converts dates created in a given timezone to another.
+     *
+     * @param string $tzIn The timezone in which the dates were entered.
+     * @param string $tzOut The timezone in which the dates will be output. Default is 'UTC'.
      * @return Period
      */
     public function convertToTimezone($tzIn, $tzOut = 'UTC')
@@ -136,9 +155,10 @@ class Period
     }
 
     /**
-     * Converts dates to the specified TimeZone
-     * @param String $tzOut  Timezone, indicates in which Timezone are the dates output
-     * @param String $tzIn  Timezone, indicates in which Timezone are the dates entered
+     * Converts dates to the specified timezone.
+     *
+     * @param string $tzOut The timezone in which the dates will be output.
+     * @param string $tzIn The timezone in which the dates were entered.
      * @return Period
      */
     public function toTimezone($tzOut, $tzIn = 'UTC')
@@ -157,27 +177,22 @@ class Period
     }
 
     /**
-     * Gets the difference between startDate and endDate
-     * @param String. Carbon function to obtain the difference between dates,  ej: diffInMinutes, diffInYear etc...
+     * Gets the difference between startDate and endDate.
+     *
+     * @param string $method Carbon function to obtain the difference between dates, e.g., diffInMinutes, diffInYears, etc.
+     * @return mixed The result of the Carbon difference method.
      */
     public function diff($method)
     {
         return $this->startDate->{$method}($this->endDate);
     }
 
-    /*
-    public function addHours($numberOfHours)
-    {
-        $this->startDate->addHours($numberOfHours);
-        $this->endDate->addHours($numberOfHours);
-    }*/
-
     /**
-     * obtains the set of dates and times, repeating at regular intervals during the start and end date
+     * Obtains the set of dates and times, repeating at regular intervals during the start and end date.
      *
-     * @param Int $interval  intervalo de tiempo
-     * @param String $scale . media de tiempo a aplicar { minutes, days, week ,month, year , etc....}
-     * @return DatePeriod
+     * @param int $interval The time interval.
+     * @param string $scale The time unit to apply (e.g., minutes, days, weeks, months, years, etc.).
+     * @return \DatePeriod The set of dates and times.
      */
     public function getDatePeriodByTime($interval, $scale)
     {
@@ -187,10 +202,10 @@ class Period
     }
 
     /**
-     * Obtains a set of dates and times, repeating at regular intervals during the start and end dates
+     * Obtains a set of dates and times, repeating at regular intervals during the start and end dates.
      *
-     * @param Int $steps. Number of steps to be obtained
-     * @return DatePeriod
+     * @param int $steps The number of steps to be obtained.
+     * @return \DatePeriod The set of dates and times.
      */
     public function getDatePeriod($steps)
     {
@@ -198,6 +213,11 @@ class Period
         return $this->getDatePeriodByTime(ceil($diff / $steps), 'seconds');
     }
 
+    /**
+     * Returns the difference between startDate and endDate as a string.
+     *
+     * @return string The formatted interval between startDate and endDate.
+     */
     public function getDiffToString()
     {
         $interval = $this->startDate->diff($this->endDate);
@@ -205,21 +225,21 @@ class Period
     }
 
     /**
-     * Limits the initial date
-     * If the limit date is later than the initial date, the initial date is replaced by the date specified in $limit
+     * Limits the initial date.
+     * If the limit date is later than the initial date, the initial date is replaced by the date specified in $limit.
      *
      * @param DateTime $limit
      */
     public function limitStartDate(DateTime $limit)
     {
         if ($limit > $this->startDate) {
-            $this->startDate = $limit ;
+            $this->startDate = $limit;
         }
     }
 
     /**
-     * Limit date is the end date
-     * If the limit date is earlier than the end date, the end date is replaced by the one specified in $limit
+     * Limits the end date.
+     * If the limit date is earlier than the end date, the end date is replaced by the one specified in $limit.
      *
      * @param DateTime $limit
      */
@@ -230,6 +250,14 @@ class Period
         }
     }
 
+    /**
+     * Gets the start and end dates based on the given parameters.
+     *
+     * @param int $start The start time quantity.
+     * @param int|null $end The end time quantity, or null for the current time.
+     * @param string $scale The unit of time (e.g., 'days', 'hours').
+     * @return static An instance with the calculated start and end dates.
+     */
     private static function getStartEndDates($start, $end, $scale)
     {
         $endDate = ($end) ? self::nowAdd($end, $scale) : self::now();
@@ -237,37 +265,68 @@ class Period
         return new static($startDate, $endDate);
     }
 
+    /**
+     * Gets the current date and time with seconds rounded.
+     *
+     * @return Carbon The current date and time with seconds rounded.
+     */
     private static function now()
     {
-
-        $now =  Carbon::now();
+        $now = Carbon::now();
         return $now->roundSeconds();
     }
 
+    /**
+     * Subtracts a specified quantity of time from the current date and time.
+     *
+     * @param int $quantity The quantity of time to subtract.
+     * @param string $unit The unit of time (e.g., 'days', 'hours').
+     * @return Carbon The modified date and time.
+     */
     private static function nowSub($quantity, $unit)
     {
         return self::nowModify($quantity, 'sub' . ucfirst($unit));
     }
 
+    /**
+     * Adds a specified quantity of time to the current date and time.
+     *
+     * @param int $quantity The quantity of time to add.
+     * @param string $unit The unit of time (e.g., 'days', 'hours').
+     * @return Carbon The modified date and time.
+     */
     private static function nowAdd($quantity, $unit)
     {
-        return self::nowModify($quantity, 'add' .  ucfirst($unit));
+        return self::nowModify($quantity, 'add' . ucfirst($unit));
     }
 
+    /**
+     * Modifies the current date and time by adding or subtracting a specified quantity of time.
+     *
+     * @param int $quantity The quantity of time to modify.
+     * @param string $method The method to apply (e.g., 'addDays', 'subHours').
+     * @return Carbon The modified date and time.
+     */
     private static function nowModify($quantity, $method)
     {
         return (self::now())->$method($quantity);
     }
 
     /**
-     * return startDate and endDate to array
-     * @return Array
+     * Returns the startDate and endDate as an array.
+     *
+     * @return array An array containing the startDate and endDate.
      */
     public function toArray()
     {
         return [$this->startDate, $this->endDate];
     }
 
+    /**
+     * Returns a string representation of the date range.
+     *
+     * @return string The formatted date range string.
+     */
     public function __toString()
     {
         return 'From: ' . $this->startDate . ', To: ' . $this->endDate;
